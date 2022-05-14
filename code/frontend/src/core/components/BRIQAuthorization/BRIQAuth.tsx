@@ -6,12 +6,12 @@ import axios from 'axios'
 const Api = axios.create({
     baseURL: BRIQ_APP_HOST_IP + "/api"
 })
-    const data = window.localStorage.getItem('user')
-    if(data !== null) {
+const data = window.localStorage.getItem('user')
+if(data !== null) {
     const user = JSON.parse(data)
     if(typeof(user.token) != 'undefined') {
-    Api.defaults.headers.common['Authorization'] = 'Bearer ' + user.token;
-}
+        Api.defaults.headers.common['Authorization'] = 'Bearer ' + user.token;
+    }
 }
 
 const defaultUserDetails = {
