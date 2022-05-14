@@ -23,6 +23,7 @@ export type Lend_Borrow_List = {
     name: string,
     amount: number,
     txn_date: number,
+    txn_reason: string,
 }
 
 export type Recent_Txn = {
@@ -31,6 +32,7 @@ export type Recent_Txn = {
     amount: number,
     txn_date: number,
     txn_with: string,
+    txn_reason: string,
 }
 
 export type AddTransactions = {
@@ -40,7 +42,7 @@ export type AddTransactions = {
     user_id : string,
     txn_type: string,
     txn_date: number,
-    reason: string,
+    txn_reason: string,
 }
 
 export type SettleTansactions = {
