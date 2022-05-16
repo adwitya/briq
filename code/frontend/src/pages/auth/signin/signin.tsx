@@ -1,11 +1,10 @@
 import React, {useState, useEffect, Fragment} from 'react'
+import Header from '../../../core/layout/header/header';
 
 const SignIn = () => {
     return (
         <Fragment>
-            <div className="">
-                WOW. pLEASE SHOW
-            </div>
+            <Header/>
         </Fragment>
     )
 }

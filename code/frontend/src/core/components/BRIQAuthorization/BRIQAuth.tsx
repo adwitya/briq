@@ -3,8 +3,8 @@ import { Navigate, useNavigate} from 'react-router-dom';
 import { BRIQ_APP_HOST_IP } from "../../../constant/briq-const";
 import axios from 'axios'
 
-const Api = axios.create({
-    baseURL: BRIQ_APP_HOST_IP + "/api"
+export const Api = axios.create({
+    baseURL: BRIQ_APP_HOST_IP + "/"
 })
 const data = window.localStorage.getItem('user')
 if(data !== null) {
