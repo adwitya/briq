@@ -60,7 +60,6 @@ export const AuthProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!isLoggedIn()) {
-        alert("INside")
         navigate('/signin');
     }
     
