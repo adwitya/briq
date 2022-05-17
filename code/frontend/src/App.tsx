@@ -1,29 +1,27 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useAuthDetails} from './core/components/BRIQAuthorization/BRIQAuth'
-import SignIn from './pages/auth/signin/signin'
 import DashBoard from './pages/dashboard/dashboard'
+import BeforeLogin from './pages/auth/auth'
 import './App.css'
 
 export const App = () => {
-  const FrontPage = () => {
-    return (
-      <SignIn/>
-    )
-    // const {authDetails} = useAuthDetails();
-    // if(authDetails.authenticated) {
-    //   return (
-    //     <DashBoard/>
-    //   )
-    // } else {
-    //   return (
-    //     <SignIn/>
-    //   )
-    // }
+  const FrontPage = () => { 
+    const {authDetails} = useAuthDetails();
+    if(authDetails.authenticated) {
+      return (
+        <DashBoard/>
+      )
+    } else {
+      return (
+        <BeforeLogin/>
+      )
+    }
   }
 
   return (
     <div className="App">
+      HIKKKKKSA
       <BrowserRouter>
         <Routes>
           <Route path='/*' element={<FrontPage/>} />

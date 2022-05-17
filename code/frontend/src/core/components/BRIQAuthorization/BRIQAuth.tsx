@@ -18,8 +18,7 @@ const defaultUserDetails = {
   name: "",
   email: "",
   token: "",
-  role: "",
-  permissions: {},
+  profile_image: "",
   authenticated: false
 };
 
@@ -28,7 +27,7 @@ type AuthContextType = {
   setAuthDetails: (value: any) => void;
 };
 
-const AuthContext = React.createContext<AuthContextType | undefined>(
+const AuthContext = React.createContext<AuthContextType | any>(
   undefined
 );
 
@@ -61,25 +60,21 @@ export const AuthProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!isLoggedIn()) {
-        navigate('/login');
+        alert("INside")
+        navigate('/signin');
     }
-  }, []);
-
-
-  useEffect(() => {
-    const data = window.localStorage.getItem('user')
+    
     if (data !== null) {
 
       const user = JSON.parse(data)
       if (typeof (user.token) != 'undefined') {
-        Api.get('/authorize')
+        Api.get('/auth/signin')
           .then((res: { data: any }) => {
             const user = {
               name: res.data.name,
               email: res.data.email,
               token: res.data.token,
-              role: res.data.role,
-              permissions: res.data.permissions,
+              profile_image: res.data.profile_image,
               authenticated: true
             }
             setAuthDetails(user)
@@ -91,14 +86,12 @@ export const AuthProvider = ({ children }: Props) => {
               name: "",
               email: "",
               token: "",
-              role: "",
-              permissions: {},
+              profile_image: "",
               authenticated: false
             }
             setAuthDetails(user)
             setLoading(false)
             window.location.href = '/signin'
-            // setRedirect(true)
           })
       } else {
         setLoading(false);

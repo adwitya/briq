@@ -5,6 +5,7 @@ const passport = require('passport')
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 const bcrypt = require('bcrypt');
 const Users = require('../model/users')
+const BRIQ_UI_HOST_IP = "http://localhost:3000/"
 
 
 const isLoggedIn = (req, res, next) => {
@@ -73,12 +74,7 @@ router.get('/verified', isLoggedIn, async(req,res) => {
                 email: user.email, 
                 id: user._id
             }, 'secret', { expiresIn: '1h' });
-
-            res.status(200).json({
-                success:true,
-                message:`Login SuccessFull ${user.email}`,
-                token: "Bearer "+ token
-            })
+            res.redirect(BRIQ_UI_HOST_IP+'?token='+token);
         }
     })
     
@@ -86,7 +82,7 @@ router.get('/verified', isLoggedIn, async(req,res) => {
 
 
 //Sign in the user
-router.post('/signin', (req,res) => {
+router.get('/signin', (req,res) => {
     Users.findOne({
         'email' : req.body.email
     }, async (err, user) => {
@@ -105,6 +101,9 @@ router.post('/signin', (req,res) => {
                     //res.cookie('jwt', token)
                     res.status(200).send({
                         success:true,
+                        name: user.name,
+                        email: user.email,
+                        profile_image: user.profile_image,
                         message:`Login SuccessFull ${req.body.email}`,
                         token: "Bearer "+ token
                     })
