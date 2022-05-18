@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
+import { blue, green, red } from '@mui/material/colors';
 import { BRIQChart } from '../../core/components/BRIQChart/BRIQChart';
 import { Fab, FormControl, InputLabel, Select } from '@mui/material';
 import { FilterAlt } from '@mui/icons-material';
@@ -46,6 +47,7 @@ const Dashboard = () => {
                                         flexDirection: 'column',
                                         justifyContent:'center',
                                         justifyItems: 'center',
+                                        background: blue[800],
                                         height: 240,
                                         }}
                                     >
@@ -66,6 +68,7 @@ const Dashboard = () => {
                                         flexDirection: 'column',
                                         justifyContent:'center',
                                         justifyItems: 'center',
+                                        background: red[600],
                                         height: 240,
                                         }}
                                     >
@@ -86,6 +89,7 @@ const Dashboard = () => {
                                         flexDirection: 'column',
                                         justifyContent:'center',
                                         justifyItems: 'center',
+                                        background: green[800],
                                         height: 240,
                                         }}
                                     >
