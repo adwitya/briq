@@ -1,0 +1,33 @@
+.not-found-container {
+    margin-top: 30%;
+}
+
+.not-found-container * {
+    margin-top: 20px;
+}
+
+.not-found-container h1 {
+    color: #ff0066;
+    font-size: 60px;
+}
+
+.not-found-container .link-text {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #ff0066;
+}
+
+.not-found-container .link-text:hover {
+    color: #fe7106;
+}
+
+@media (min-width: 2560px) and (max-width: 3840px) {
+    .not-found-container h1 {
+        color: #ff0066;
+        font-size: 120px;
+    }
+
+    .font-20 {
+        font-size: 20px;
+    }
+}

@@ -1,12 +1,14 @@
 import React, {useState, useEffect, Fragment} from 'react'
+import { useForm } from 'react-hook-form'
 import '../auth.css'
 import { styled, withStyles } from '@mui/material/styles';
 import { Box, Grid, Paper, Typography, Stack, Avatar, Divider, Button, TextField,
-        FormControl, Input, InputLabel, InputAdornment, IconButton , OutlinedInput} from '@mui/material';
+        FormControl, Input, InputLabel, InputAdornment, IconButton , OutlinedInput, capitalize} from '@mui/material';
 import { ButtonProps } from '@mui/material/Button';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { BRIQ_APP_HOST_IP } from "../../../constant/briq-const";
+import {Api, useAuthDetails} from '../../../core/components/BRIQAuthorization/BRIQAuth'
 
 const Img = styled('img')({
     margin: 'auto',
@@ -26,13 +28,60 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
     },
 }));
 
+type Inputs = {
+    briqEmail: string,
+    briqPassword: string
+}
+
 const SignIn = () => {
 
+    const [loading, setLoading] = useState({loading: false, setData: false})
     const [showPassword, setShowPassword] = useState<Boolean>(false);
+    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
+    const {setAuthDetails} = useAuthDetails()!
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
+
+    const onSubmit = (data: any) => {
+        setLoading({loading: true, setData: false})
+        Api.post('/auth/signin', data)
+        .then((res: { data: any }) => {
+            const user = {
+                name: res.data.name,
+                email: res.data.email,
+                profile_image: res.data.profile_image,
+                token: res.data.token,
+                authenticated: true,
+            }
+            Api.defaults.headers.common['Authorization'] = 'Bearer ' + user.token;
+
+            window.localStorage.setItem('user', JSON.stringify(user))
+            setLoading({loading: false, setData: true})
+            setAuthDetails(user);
+        })
+        .catch((error: any) => {
+            setLoading({loading: false, setData: false})
+            // if(error.response.status === 500) {
+            //     addToast("Sorry, something went wrong there, try again.", {
+            //         appearance: 'error',
+            //         autoDismiss: true,
+            //     })
+            // } else if(error.response.status === 419) {
+            //     setSErrors(error.response.data)
+            //     addToast("We encounted validation problem, please correct and try again.", {
+            //         appearance: 'error',
+            //         autoDismiss: true,
+            //     })
+            // } else if(error.response.status === 404) {
+            //     addToast("We are not able to find associated email, please check and try again.", {
+            //         appearance: 'error',
+            //         autoDismiss: true,
+            //     })
+            // }
+        })
+    }
 
     return (
         <Fragment>
@@ -96,11 +145,11 @@ const SignIn = () => {
                                 Enter your credentials to continue
                             </Typography>
                             <Button 
-                                sx={{width:1}} 
+                                sx={{width:1,textTransform:'capitalize'}} 
                                 variant="outlined" 
                                 onClick={()=>{window.location.href=BRIQ_APP_HOST_IP+"/auth/google"}}
                                 startIcon={<Avatar src={require('../../../assets/images/google-logo.png')} />}>
-                                    Sign in with Google
+                                    Sign In With Google
                             </Button>
                         </Grid>
                         
@@ -118,7 +167,8 @@ const SignIn = () => {
                             '& > :not(style)': { mt:2, width: 1 },
                         }}
                         noValidate
-                        autoComplete="off"
+                        autoComplete="off" 
+                        onSubmit={handleSubmit(onSubmit)}
                     >
                         <Typography 
                             variant="body1" 
@@ -130,13 +180,19 @@ const SignIn = () => {
                             gutterBottom>
                             Sign in with Email Address 
                         </Typography>
-                        <TextField type='email' placeholder='youremail@address.com' id="outlined-basic" label="Email" variant="outlined" />
+                        <TextField 
+                            type='email' 
+                            placeholder='youremail@address.com' 
+                            id="briqEmail" 
+                            label="Email" 
+                            variant="outlined"
+                            {...register('briqEmail')} 
+                        />
 
                         <FormControl variant="outlined">
                             <InputLabel htmlFor="briq-password">Password</InputLabel>
                             <OutlinedInput
                                 id="briq-password" 
-                                name="briq-password" 
                                 label="Password"
                                 type={showPassword ? 'text' : 'password'}
                                 endAdornment={
@@ -149,16 +205,20 @@ const SignIn = () => {
                                     </IconButton>
                                 </InputAdornment>
                                 }
+
+                                {...register('briqPassword')}
+                                className={(errors.briqPassword ? "error width100per" : "width100per")}
                             />
                         </FormControl>
                         
-                        <ColorButton variant="contained">Sign In</ColorButton>
+                        <ColorButton variant="contained" type="submit">Sign In</ColorButton>
                     </Box>
                     <Grid item xs={12} sx={{mt:2, mb:2}}>
                         <Divider sx={{mb:2}}></Divider>
-                        <Typography variant="body1" component="a" href="/" 
+                        <Typography variant="body1" component="a" href="/signup" 
                         sx={{
                             textDecoration: 'none',
+                            color: 'rgb(63, 81, 181)'
                         }}
                         gutterBottom>
                             Don't have an account?

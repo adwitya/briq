@@ -2,6 +2,12 @@ const express = require('express')
 const router = express.Router()
 const Users = require('../model/users')
 
+
+router.get('/authorize', (req,res) => {
+    res.sendStatus(200)
+})
+
+
 router.get('/user/:id', async (req,res)=>{
     try {
         const user_data = await Users.findById(req.params.id)

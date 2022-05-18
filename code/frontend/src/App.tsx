@@ -1,16 +1,17 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { useAuthDetails} from './core/components/BRIQAuthorization/BRIQAuth'
+import { Routes, Route } from 'react-router-dom'
+import { Api, useAuthDetails} from './core/components/BRIQAuthorization/BRIQAuth'
 import DashBoard from './pages/dashboard/dashboard'
 import BeforeLogin from './pages/auth/auth'
 import './App.css'
+import Home from './pages/home'
 
 export const App = () => {
   const FrontPage = () => { 
     const {authDetails} = useAuthDetails();
     if(authDetails.authenticated) {
       return (
-        <DashBoard/>
+        <Home/>
       )
     } else {
       return (
@@ -21,12 +22,9 @@ export const App = () => {
 
   return (
     <div className="App">
-      HIKKKKKSA
-      <BrowserRouter>
         <Routes>
           <Route path='/*' element={<FrontPage/>} />
         </Routes>
-      </BrowserRouter>
     </div>
   );
 }

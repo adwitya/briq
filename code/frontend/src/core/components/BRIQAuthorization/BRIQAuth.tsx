@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { Navigate, useNavigate} from 'react-router-dom';
+import { Navigate, useNavigate, useLocation} from 'react-router-dom';
 import { BRIQ_APP_HOST_IP } from "../../../constant/briq-const";
 import axios from 'axios'
 
 export const Api = axios.create({
     baseURL: BRIQ_APP_HOST_IP + "/"
 })
-const data = window.localStorage.getItem('user')
-if(data !== null) {
-    const user = JSON.parse(data)
+const data_axios = window.localStorage.getItem('user')
+if(data_axios !== null) {
+    const user = JSON.parse(data_axios)
     if(typeof(user.token) != 'undefined') {
-        Api.defaults.headers.common['Authorization'] = 'Bearer ' + user.token;
+        Api.defaults.headers.common['Authorization'] = user.token;
     }
 }
 
@@ -39,7 +39,7 @@ type Props = {
 const isLoggedIn = () => {
   const userDetails = localStorage.getItem('user') as string;
   const user = JSON.parse(userDetails);
-  const location = window.location.pathname.includes('signin') ||
+  const location = window.location.pathname.includes('signin') || window.location.pathname.includes('signup') ||
     window.location.pathname == "/"
     ;
   return user?.authenticated || location;
@@ -49,25 +49,30 @@ const isLoggedIn = () => {
 const isLoginPageAccess = () => {
   const userDetails = localStorage.getItem('user') as string;
   const user = JSON.parse(userDetails);
-  const location = window.location.pathname == '/signin';
+  const location = window.location.pathname == '/signin' || window.location.pathname.includes('signup');
   return (user && user.authenticated && location)
 }
 
 export const AuthProvider = ({ children }: Props) => {
   const [authDetails, setAuthDetails] = React.useState(defaultUserDetails);
   const [loading, setLoading] = React.useState(true);
-  const [redirect, setRedirect] = React.useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   useEffect(() => {
+      if (!isLoggedIn()) {
+        navigate('/login');
+      }
+  }, [location]);
+  
+  useEffect(() => {
+    const data = window.localStorage.getItem('user')
     if (!isLoggedIn()) {
         navigate('/signin');
     }
-    
     if (data !== null) {
-
       const user = JSON.parse(data)
       if (typeof (user.token) != 'undefined') {
-        Api.get('/auth/signin')
+        Api.get('/briq/authorize')
           .then((res: { data: any }) => {
             const user = {
               name: res.data.name,
@@ -100,11 +105,7 @@ export const AuthProvider = ({ children }: Props) => {
     }
   }, []);
 
-  if (redirect) return <Navigate to='/signin' />
-
   if (!isLoggedIn()) {
-    const redirectURL = window.location.pathname + window.location.search;
-    localStorage.setItem('redirectURL', redirectURL.toString());
     return <Navigate to='/signin' />
   } else if (isLoginPageAccess()) {
     return <Navigate to='/' />

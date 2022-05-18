@@ -74,7 +74,7 @@ router.get('/verified', isLoggedIn, async(req,res) => {
                 email: user.email, 
                 id: user._id
             }, 'secret', { expiresIn: '1h' });
-            res.redirect(BRIQ_UI_HOST_IP+'?token='+token);
+            res.redirect(BRIQ_UI_HOST_IP+'/verify?token='+token);
         }
     })
     
@@ -82,9 +82,9 @@ router.get('/verified', isLoggedIn, async(req,res) => {
 
 
 //Sign in the user
-router.get('/signin', (req,res) => {
+router.post('/signin', (req,res) => {
     Users.findOne({
-        'email' : req.body.email
+        'email' : req.body.briqEmail
     }, async (err, user) => {
         if(err) 
             res.status(404)
@@ -92,7 +92,7 @@ router.get('/signin', (req,res) => {
             res.status(401).send({error:'Sign Up User'});
         }
         else {
-            bcrypt.compare(req.body.password, user.password, (err, result) => {
+            bcrypt.compare(req.body.briqPassword, user.password, (err, result) => {
                 if (result == true) {
                     let token = jwt.sign({
                         email: user.email, 
@@ -104,7 +104,6 @@ router.get('/signin', (req,res) => {
                         name: user.name,
                         email: user.email,
                         profile_image: user.profile_image,
-                        message:`Login SuccessFull ${req.body.email}`,
                         token: "Bearer "+ token
                     })
                 } else {
@@ -117,21 +116,32 @@ router.get('/signin', (req,res) => {
 //Sign up the user
 router.post('/signup', async(req,res) => {
     Users.findOne({ 
-        'email' : req.body.email
+        'email' : req.body.briqEmail
     }, async (err, user) => {
         if(err) 
             res.status(404)
         else if(!user)  {
             const add_user = new Users();
-            add_user.name = req.body.name;
-            add_user.email = req.body.email;
-            add_user.profile_image = req.body.profile_image;
+            add_user.name = req.body.briqName;
+            add_user.email = req.body.briqEmail;
+            add_user.profile_image = 'null';
             const salt = await bcrypt.genSalt(10);
-            add_user.password = await bcrypt.hash(req.body.password, salt);
+            add_user.password = await bcrypt.hash(req.body.briqPassword, salt);
 
             try {
                 const userAdd = await add_user.save()
-                res.status(200).json(userAdd)
+                let token = jwt.sign({
+                    email: userAdd.email, 
+                    id: userAdd._id
+                }, 'secret', { expiresIn: '1d' });
+                //res.cookie('jwt', token)
+                res.status(200).send({
+                    success:true,
+                    name: userAdd.name,
+                    email: userAdd.email,
+                    profile_image: userAdd.profile_image,
+                    token: "Bearer "+ token
+                })
             } catch(err) {
                 console.log(err);
             }
@@ -144,10 +154,10 @@ router.post('/signup', async(req,res) => {
 })
 
 //Logout User
-router.get('/logout', (req,res) => {
+router.post('/logout', (req,res) => {
     req.logout();
     req.session.destroy();
-    res.send("Logged out of session")
+    res.sendStatus(200).send("Logged out of session")
 })
 
 module.exports = router
