@@ -92,9 +92,10 @@ const SignUp = () => {
                 <Paper
                     sx={{
                         p: 2,
+                        position:'relative',
                         margin: '0 10vw',
                         maxWidth: '25vw',
-                        minWidth: 400,
+                        minWidth: 300,
                         boxShadow: 1,
                         borderRadius: 3,
                         backgroundColor: (theme) =>
@@ -124,7 +125,7 @@ const SignUp = () => {
                                 <span style={{color:"#5FE3C4", borderTop:"1px solid #5FE3C4"}}>BORROW</span>
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} sx={{mt:5}}>
+                        <Grid item xs={12} sx={{mt:3}}>
                             <Typography 
                                 variant="h2" 
                                 sx={{

@@ -9,7 +9,7 @@ const BeforeLogin = () => {
         <Routes>
             <Route path='/' element={<SignIn/>} />
             <Route path='/signin' element={<SignIn/>} />
-            <Route path='/verify' element={<Verify/>} />
+            <Route path='/verify/:token' element={<Verify/>} />
             <Route path='/signup' element={<SignUp/>} />
         </Routes>
     )

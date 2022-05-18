@@ -39,7 +39,9 @@ type Props = {
 const isLoggedIn = () => {
   const userDetails = localStorage.getItem('user') as string;
   const user = JSON.parse(userDetails);
-  const location = window.location.pathname.includes('signin') || window.location.pathname.includes('signup') ||
+  const location = window.location.pathname.includes('signin') || 
+    window.location.pathname.includes('signup') ||
+    window.location.pathname.includes('verify') ||
     window.location.pathname == "/"
     ;
   return user?.authenticated || location;
@@ -49,7 +51,7 @@ const isLoggedIn = () => {
 const isLoginPageAccess = () => {
   const userDetails = localStorage.getItem('user') as string;
   const user = JSON.parse(userDetails);
-  const location = window.location.pathname == '/signin' || window.location.pathname.includes('signup');
+  const location = window.location.pathname == '/signin' || window.location.pathname.includes('signup') || window.location.pathname.includes('verify');
   return (user && user.authenticated && location)
 }
 

@@ -74,7 +74,16 @@ router.get('/verified', isLoggedIn, async(req,res) => {
                 email: user.email, 
                 id: user._id
             }, 'secret', { expiresIn: '1h' });
-            res.redirect(BRIQ_UI_HOST_IP+'/verify?token='+token);
+
+            let loginToken = jwt.sign({
+                name: user.name,
+                email: user.email,
+                profile_image: user.profile_image,
+                token: "Bearer "+ token,
+                authenticated: true,
+            },"loginSecret", {expiresIn: '1h'})
+            
+            res.redirect(BRIQ_UI_HOST_IP+'verify/'+loginToken);
         }
     })
     
