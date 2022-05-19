@@ -17,6 +17,14 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    gender: {
+        type: String,
+        required: false
+    },
+    invite_id: {
+        type: String,
+        required: false
+    },
 },
 { timestamps: true })
 
