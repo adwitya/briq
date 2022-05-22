@@ -32,7 +32,8 @@ type Inputs = {
     briqTxnType: string,
     briqTxnAmount: string,
     briqDate: Date,
-    briqReason: string
+    briqReason: string,
+    briqEmail: string
 }
 
 const AddExpense = () => {
@@ -64,6 +65,9 @@ const AddExpense = () => {
     };
 
     const onSubmit = (data: any) => {
+        const user_email:any = localStorage.getItem("user");
+        data['briqEmail']  = JSON.parse(user_email).email;
+        data['briqDate'] = dateValue;
         Api.post('/briq/addTxn', data).then((res: { data: any }) => {
             setOpen(false)
         }).catch((err)=>{

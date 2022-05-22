@@ -77,7 +77,7 @@ const Dashboard = () => {
                                         </Typography>
 
                                         <Typography variant='h3' component="div">
-                                            $ 190.00
+                                            $ 90.00
                                         </Typography>
                                     </Paper>
                                 </Grid>

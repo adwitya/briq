@@ -38,12 +38,10 @@ router.get('/allUsers', async(req,res)=> {
 router.get('/userTxn', async(req,res)=> {
     try {
      const Txn = await Txn.findOne({
-        'user_id' : req.body.briqId,
+        'user_id' : req.query.briqEmail,
         'txn_status': 'unpaid'
-    })
-     const allUser = userList.map(({_id, name, email, profile_image}) => ({_id, name, email, profile_image}))
-     allUser.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
-     res.status(200).send(allUser)
+     })
+     res.status(200).send(Txn)
     } catch(err) {
  
     }
@@ -51,26 +49,21 @@ router.get('/userTxn', async(req,res)=> {
  
 
 router.post('/addTxn', async(req,res) => {
-    const add_user = new Users();
-    add_user.name = req.body.briqName;
-    add_user.email = req.body.briqEmail;
-    add_user.profile_image = 'null';
-    const salt = await bcrypt.genSalt(10);
-    add_user.password = await bcrypt.hash(req.body.briqPassword, salt);
+    console.log(req.body);
+    const add_txn = new Txn();
+    add_txn.txn_with = req.body.briqTxnWith;
+    add_txn.txn_type = req.body.briqTxnType;
+    add_txn.txn_reason = req.body.briqReason;
+    add_txn.user_id = req.body.briqEmail;
+    add_txn.txn_date = req.body.briqDate;
+    add_txn.txn_amount = req.body.briqTxnAmount;
+    add_txn.txn_status = 'unpaid';
 
     try {
-        const userAdd = await add_user.save()
-        let token = jwt.sign({
-            email: userAdd.email, 
-            id: userAdd._id
-        }, 'secret', { expiresIn: '1d' });
-        //res.cookie('jwt', token)
-        res.status(200).send({
+        const userAdd = await add_txn.save()
+        res.sendStatus(200).send({
             success:true,
-            name: userAdd.name,
-            email: userAdd.email,
-            profile_image: userAdd.profile_image,
-            token: "Bearer "+ token
+            message:"Added the Transaction"
         })
     } catch(err) {
         console.log(err);

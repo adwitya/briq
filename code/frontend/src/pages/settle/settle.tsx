@@ -43,13 +43,15 @@ const Settle = () => {
 
     //Fetch All Users 
     useEffect(()=>{
+        const user_email:any = localStorage.getItem('user');
+        const briqEmail = JSON.parse(user_email).email
         if(open)
-        Api.get('/briq/userTxn').then((res: { data: any }) => {
+        Api.get('/briq/userTxn?briqEmail='+briqEmail).then((res: { data: any }) => {
             setUserList(res.data);
         }).catch((err)=>{
 
         })
-    },[])
+    },[open])
 
     const handleClickOpen = () => {
       setOpen(true);
